@@ -1,5 +1,7 @@
 import React from "react";
 
+import Switch from "./Switch";
+
 export const App = () => {
-  return <h2>Stock Market Application</h2>;
+  return <Switch />;
 };
