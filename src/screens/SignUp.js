@@ -1,25 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import LoginImage from "../assets/login.svg";
+import SignUpImage from "../assets/login.svg";
 import { CoverPicture } from "../components/CoverPicture";
+import * as authActions from "../store/actions/auth";
 
 export const SignUp = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+  const [check, setCheck] = useState("");
 
-  const signUpHandler = () => {
-    console.log(firstName, lastName, email, password);
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
+  const signUpHandler = async () => {
+    // console.log(first_name, last_name, email, password, confirmPass);
+    try {
+      if (first_name && last_name && email && password && confirmPass) {
+        await dispatch(
+          authActions.signUp(
+            first_name,
+            last_name,
+            email,
+            password,
+            confirmPass
+          )
+        );
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPass("");
+      } else {
+        console.log("Please ensure all the fields are provided");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+
+  const checkConfirmPass = () => {
+    return password === confirmPass;
+  };
+
+  useEffect(() => {
+    if (checkConfirmPass() && confirmPass.length > 0) {
+      setCheck("Passwords match!");
+    } else if (confirmPass.length > 0) {
+      setCheck("Passwords do not match");
+    }
+  }, [check, confirmPass]);
 
   const loginClickHandler = () => {
     navigate("/");
@@ -36,14 +71,14 @@ export const SignUp = () => {
               type="text"
               placeholder="First Name"
               onChange={(e) => setFirstName(e.target.value)}
-              value={firstName}
+              value={first_name}
             />
             <p>Last name</p>
             <InputBox
               type="text"
               placeholder="Last Name"
               onChange={(e) => setLastName(e.target.value)}
-              value={lastName}
+              value={last_name}
             />
             <p>Email</p>
             <InputBox
@@ -59,6 +94,13 @@ export const SignUp = () => {
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             />
+            <p>Confirm Password</p>
+            <InputBox
+              type="password"
+              placeholder="Confirm Password"
+              onChange={(e) => setConfirmPass(e.target.value)}
+              value={confirmPass}
+            />
             <Button onClick={signUpHandler}>Sign Up</Button>
             <p>
               Already have an account?{" "}
@@ -67,7 +109,7 @@ export const SignUp = () => {
           </FormContainer>
         </Left>
         <Right>
-          <CoverPicture url={LoginImage} alt="stock market" />
+          <CoverPicture url={SignUpImage} alt="stock market" />
         </Right>
       </SubContainer>
     </Wrapper>
@@ -79,6 +121,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100vh;
 `;
 
 const SubContainer = styled.div`
@@ -96,7 +139,7 @@ const Left = styled.div`
   align-items: center;
   justify-content: center;
 
-  > p {
+  > div > p {
     margin-bottom: 4px;
     font-weight: 400;
   }

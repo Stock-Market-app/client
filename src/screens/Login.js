@@ -1,19 +1,31 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import LoginImage from "../assets/login.svg";
 import { CoverPicture } from "../components/CoverPicture";
+import * as authActions from "../store/actions/auth";
 
 export const Login = () => {
-  let navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const loginHandler = () => {
-    console.log(email, password);
-    setEmail("");
-    setPassword("");
+  const loginHandler = async () => {
+    // console.log(email, password);
+    try {
+      if (username && password) {
+        await dispatch(authActions.login(username, password));
+      }
+      setUserName("");
+      setPassword("");
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const signUpClickHandler = () => {
@@ -31,8 +43,8 @@ export const Login = () => {
             <InputBox
               type="email"
               placeholder="Enter Your Email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              onChange={(e) => setUserName(e.target.value)}
+              value={username}
             />
             <p>Password</p>
             <InputBox
@@ -61,6 +73,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100vh;
 `;
 
 const SubContainer = styled.div`

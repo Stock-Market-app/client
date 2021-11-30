@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { SignUp } from "./screens/SignUp";
 import { Login } from "./screens/Login";
-import { Home } from "./screens/Home.js";
+import { Dashboard } from "./screens/Dashboard.js";
 
 const Switch = () => {
   return (
@@ -11,7 +11,7 @@ const Switch = () => {
       <Routes>
         <Route path="/" exact element={<Login />} />
         <Route path="/signup" exact element={<SignUp />} />
-        <Route path="/home" exact element={<Home />} />
+        <Route path="/dashboard" exact element={<Dashboard />} />
       </Routes>
     </Router>
   );
