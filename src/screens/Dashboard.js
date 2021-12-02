@@ -115,6 +115,8 @@ export const Dashboard = () => {
             last_price="117.60"
             average_price="118.25"
             volume="6875463"
+            
+            
           />
         </>
       </SubContainer>
@@ -123,7 +125,7 @@ export const Dashboard = () => {
 };
 
 const Wrapper = styled.div`
-  background: #e3e7eb;
+  background: #E0FFFF;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,11 +136,11 @@ const Wrapper = styled.div`
 `;
 
 const SubContainer = styled.div`
-  background: #ffffff;
+  background: #000000;
   display: grid;
   grid-template-columns: 50% 50%;
   height: 100%;
-  width: 80%;
+  width:  90%;
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;
   padding-top: 32px;
@@ -148,7 +150,17 @@ const SearchContainer = styled.div`
   display: flex;
   align-items: center;
   border: 1px solid gray;
-  height: 80px;
+  margin:0 auto;
+  width:500px;
+ 
+  flex-direction: row;            /* default value; can be omitted */
+  flex-wrap: nowrap;     
+  margin-right: 0;
+  background: 	#D3D3D3;
+  text-align: center;
+  grid-auto-rows: minmax(100px,auto);
+  float: left;
+  height: 50px;
   border-radius: 6px;
   justify-content: space-between;
   margin: 12px 32px;
@@ -157,9 +169,11 @@ const SearchContainer = styled.div`
 const SearchBar = styled.input`
   width: 80%;
   height: 20%;
+  
   padding: 12px 4px;
   border: none;
   outline: none;
+  
   margin-left: 6px;
 `;
 
@@ -170,6 +184,7 @@ const SearchHints = styled.div`
   margin-left: 40px;
   border: 2px solid gray;
   opacity: 0.7;
+  background: #D3D3D3;
   z-index: 4;
   font-weight: 700;
 `;
