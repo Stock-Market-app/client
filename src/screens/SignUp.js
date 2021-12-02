@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import SignUpImage from "../assets/login.svg";
 import { CoverPicture } from "../components/CoverPicture";
@@ -17,11 +19,15 @@ export const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [check, setCheck] = useState("");
+  const [loading, setIsLoading] = useState(false);
+  const [error, setIsError] = useState(false);
 
   const signUpHandler = async () => {
     // console.log(first_name, last_name, email, password, confirmPass);
     try {
       if (first_name && last_name && email && password && confirmPass) {
+        setIsLoading(true);
+        if (loading) toast.info("Signing Up...");
         await dispatch(
           authActions.signUp(
             first_name,
@@ -36,11 +42,18 @@ export const SignUp = () => {
         setEmail("");
         setPassword("");
         setConfirmPass("");
+        setIsLoading(false);
+        toast.success("Sign up successful");
       } else {
-        console.log("Please ensure all the fields are provided");
+        setIsError(true);
+        setIsLoading(false);
+        if (error) toast.warning("Please fill all the fields");
       }
     } catch (error) {
-      console.log(error.message);
+      setIsError(true);
+      setIsLoading(false);
+      if (error) toast.error("Email already taken");
+      setIsError(false);
     }
   };
 
@@ -101,10 +114,13 @@ export const SignUp = () => {
               onChange={(e) => setConfirmPass(e.target.value)}
               value={confirmPass}
             />
+            {confirmPass.length > 0 && <p>{check}</p>}
             <Button onClick={signUpHandler}>Sign Up</Button>
             <p>
               Already have an account?{" "}
-              <span onClick={loginClickHandler}>Log In!</span>
+              <span onClick={loginClickHandler} style={{ cursor: "pointer" }}>
+                Log In!
+              </span>
             </p>
           </FormContainer>
         </Left>
@@ -112,6 +128,7 @@ export const SignUp = () => {
           <CoverPicture url={SignUpImage} alt="stock market" />
         </Right>
       </SubContainer>
+      <ToastContainer newestOnTop={true} theme="dark" />
     </Wrapper>
   );
 };

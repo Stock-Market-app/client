@@ -1,14 +1,23 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 
 import * as authActions from "../store/actions/auth";
 
 export const Navbar = () => {
+  const dispatch = useDispatch();
+  const username = useSelector((state) => state.Auth.userName);
+  console.log(username);
+
+  const logouthandler = async () => {
+    await dispatch(authActions.logout());
+  };
+
   return (
     <NavbarContainer>
-      <h4>StockStop</h4>
-      <h4>Search</h4>
-      <Button onClick={() => authActions.logout()}>Logout</Button>
+      <h4>Hello {username}!</h4>
+      <h2>Welcome to StockStop</h2>
+      <Button onClick={logouthandler}>Logout</Button>
     </NavbarContainer>
   );
 };
@@ -22,6 +31,12 @@ const NavbarContainer = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  > h2 {
+    text-decoration: underline;
+    margin: 18px;
+    cursor: none;
+  }
+
   > h4 {
     margin: 18px;
   }
@@ -33,4 +48,5 @@ const Button = styled.button`
   padding: 8px 16px;
   border: none;
   background-color: #04abeb;
+  cursor: pointer;
 `;

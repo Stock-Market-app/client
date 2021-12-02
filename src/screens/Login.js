@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import LoginImage from "../assets/login.svg";
 import { CoverPicture } from "../components/CoverPicture";
@@ -13,18 +15,29 @@ export const Login = () => {
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setIsLoading] = useState(false);
+  const [error, setIsError] = useState(false);
 
   const loginHandler = async () => {
     // console.log(email, password);
     try {
       if (username && password) {
+        setIsLoading(true);
+        if (loading) toast.info("Logging In ...");
         await dispatch(authActions.login(username, password));
+        setUserName("");
+        setPassword("");
+        setIsLoading(false);
+        setIsError(false);
+        navigate("/dashboard");
+      } else {
+        setIsError(true);
+        if (error) toast.warning("Please fill username and password");
       }
-      setUserName("");
-      setPassword("");
-      navigate("/dashboard");
     } catch (error) {
-      console.log(error);
+      setIsError(true);
+      if (error) toast.error("Invalid username / password");
+      setIsError(false);
     }
   };
 
@@ -56,7 +69,9 @@ export const Login = () => {
             <Button onClick={loginHandler}>Login</Button>
             <p>
               Dont have an account?{" "}
-              <span onClick={signUpClickHandler}>Join Us Now!</span>
+              <span onClick={signUpClickHandler} style={{ cursor: "pointer" }}>
+                Join Us Now!
+              </span>
             </p>
           </FormContainer>
         </Left>
@@ -64,6 +79,7 @@ export const Login = () => {
           <CoverPicture url={LoginImage} alt="stock market" />
         </Right>
       </SubContainer>
+      <ToastContainer />
     </Wrapper>
   );
 };
