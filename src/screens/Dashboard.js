@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
+import sm1 from "../assets/sm1.png";
 import { DashboardCard } from "../components/DashboardCard";
 import { Navbar } from "../components/Navbar";
+
+
+
+
 
 export const Dashboard = () => {
   const stocks = [
@@ -85,13 +89,18 @@ export const Dashboard = () => {
             })}
           </SearchHints>
         )}
-        <>
+        
+        <st2>
+        
+          
+        
           <DashboardCard
             name="NSE:INFY"
             last_price="117.60"
             average_price="118.25"
             volume="6875463"
           />
+          
           <DashboardCard
             name="NSE:INFY"
             last_price="117.60"
@@ -118,8 +127,13 @@ export const Dashboard = () => {
             
             
           />
-        </>
+          
+        </st2>
+        
+        
+        
       </SubContainer>
+       
     </Wrapper>
   );
 };
@@ -135,12 +149,36 @@ const Wrapper = styled.div`
   }
 `;
 
+
+
+const st2 = styled.div`
+    background: 	#FFFF00;
+    display: grid;
+  grid-template-columns: 50% 50%;
+  height: 100%;
+  width:  90%;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding-top: 32px;
+    `;
+  
+const stimg = styled.div`
+    
+    position: absolute;
+    display: grid;
+    top : 20000px;
+    left : -200px;
+    width:  120%;
+  
+    padding-top: 32px;
+    `;
+
 const SubContainer = styled.div`
   background: #000000;
   display: grid;
   grid-template-columns: 50% 50%;
   height: 100%;
-  width:  90%;
+  width:  80%;
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;
   padding-top: 32px;
@@ -151,7 +189,7 @@ const SearchContainer = styled.div`
   align-items: center;
   border: 1px solid gray;
   margin:0 auto;
-  width:500px;
+  width:525px;
  
   flex-direction: row;            /* default value; can be omitted */
   flex-wrap: nowrap;     
@@ -160,7 +198,7 @@ const SearchContainer = styled.div`
   text-align: center;
   grid-auto-rows: minmax(100px,auto);
   float: left;
-  height: 50px;
+  height: 90px;
   border-radius: 6px;
   justify-content: space-between;
   margin: 12px 32px;
