@@ -8,16 +8,22 @@ import { Navbar } from "../components/Navbar";
 
 export const Dashboard = () => {
   const stocks = [
-    "Nifty",
-    "Apple",
-    "Infosys",
-    "Airtel",
-    "Tata",
-    "Birla",
-    "Ambani",
-    "Adani",
-    "Amazon",
-    "Flipkart",
+    {
+      name: "Nifty",
+      id: 1,
+    },
+    {
+      name: "Apple",
+      id: 2,
+    },
+    { name: "Infosys", id: 3 },
+    { name: "Airtel", id: 4 },
+    { name: "Tata", id: 5 },
+    { name: "Birla", id: 6 },
+    { name: "Ambani", id: 7 },
+    { name: "Adani", id: 8 },
+    { name: "Amazon", id: 9 },
+    { name: "Flipkart", id: 10 },
   ];
   const token = useSelector((state) => state.Auth.token);
   // console.log(token);
@@ -34,8 +40,9 @@ export const Dashboard = () => {
 
   const handleSearch = (key) => {
     var filtered = [];
+    console.log("here");
     if (key.length > 0) {
-      filtered = stocks.filter((item) => item.includes(`${key}`));
+      filtered = stocks.filter((item) => item.name.includes(`${key}`));
       setFilteredList(filtered);
     } else {
       setFilteredList([]);
@@ -59,7 +66,7 @@ export const Dashboard = () => {
           <i
             className="fas fa-search"
             style={{ marginRight: "12px" }}
-            onClick={() => handleSearch()}
+            onClick={() => navigate(`/stock/${searchItem}`)}
           ></i>
         </SearchContainer>
         {filteredList.length > 0 && (
@@ -68,11 +75,11 @@ export const Dashboard = () => {
               return (
                 <p
                   onClick={() => {
-                    setSearchItem(item);
+                    setSearchItem(item.name);
                     setFilteredList([]);
                   }}
                 >
-                  {item}
+                  {item.name}
                 </p>
               );
             })}
@@ -161,7 +168,7 @@ const SearchHints = styled.div`
   position: absolute;
   margin-top: 80px;
   margin-left: 40px;
-  border: 2px solid white;
+  border: 2px solid gray;
   opacity: 0.7;
   z-index: 4;
   font-weight: 700;

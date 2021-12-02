@@ -1,11 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
 import * as authActions from "../store/actions/auth";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const username = useSelector((state) => state.Auth.userName);
   console.log(username);
 
@@ -15,7 +17,7 @@ export const Navbar = () => {
 
   return (
     <NavbarContainer>
-      <h4>Hello {username}!</h4>
+      <h4 onClick={() => navigate("/dashboard")}>Hello {username}!</h4>
       <h2>Welcome to StockStop</h2>
       <Button onClick={logouthandler}>Logout</Button>
     </NavbarContainer>
@@ -39,6 +41,7 @@ const NavbarContainer = styled.div`
 
   > h4 {
     margin: 18px;
+    cursor: pointer;
   }
 `;
 
