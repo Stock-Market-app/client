@@ -59,6 +59,7 @@ export const Dashboard = () => {
             background: `url(${Stock})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
+            backgroundAttachment: "fixed",
             borderRadius: "6px",
             opacity: "0.8",
           }}
@@ -207,8 +208,25 @@ const SubContainer = styled.div`
   border-bottom-left-radius: 12px;
   padding-top: 32px;
   overflow-y: scroll;
+
   ::-webkit-scrollbar {
-    display: none;
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #ffeeee;
+    border-radius: 12px;
+    margin-top: 36px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #444;
+    border-radius: 12px;
   }
 `;
 
@@ -219,6 +237,7 @@ const SearchContainer = styled.div`
   width: 525px;
   flex-wrap: nowrap;
   padding: 6px;
+  position: fixed;
   outline: none;
   border: none;
   text-align: center;
