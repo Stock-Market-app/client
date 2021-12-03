@@ -9,17 +9,30 @@ export const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const username = useSelector((state) => state.Auth.userName);
-  console.log(username);
+  const token = useSelector((state) => state.Auth.token);
+  // console.log(username);
 
-  const logouthandler = async () => {
+  const logoutHandler = async () => {
     await dispatch(authActions.logout());
+  };
+
+  const watchlistHandler = () => {
+    if (token) navigate("/watchlist");
+    else navigate("/");
   };
 
   return (
     <NavbarContainer>
       <h4 onClick={() => navigate("/dashboard")}>Hello {username}!</h4>
       <h2>Welcome to StockStop</h2>
-      <Button onClick={logouthandler}>Logout</Button>
+      <div>
+        <Button onClick={watchlistHandler} color="#04abeb">
+          Watchlist
+        </Button>
+        <Button onClick={logoutHandler} color="#b52a46">
+          Logout
+        </Button>
+      </div>
     </NavbarContainer>
   );
 };
@@ -50,6 +63,7 @@ const Button = styled.button`
   border-radius: 6px;
   padding: 8px 16px;
   border: none;
-  background-color: #04abeb;
+  background-color: ${(props) => props.color};
   cursor: pointer;
+  color: #eeffff;
 `;

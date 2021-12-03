@@ -60,6 +60,7 @@ export const Dashboard = () => {
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             borderRadius: "6px",
+            opacity: "0.8",
           }}
         >
           <SearchContainer>
