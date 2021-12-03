@@ -19,7 +19,7 @@ export const DashboardCard = ({ name, last_price, average_price, volume }) => {
 };
 
 const Card = styled.div`
-  background: #f6f8fb;
+  background: #a1e6e4;
   border-radius: 12px;
   padding: 12px;
   margin: 12px;

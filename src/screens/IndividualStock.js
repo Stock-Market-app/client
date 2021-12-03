@@ -41,6 +41,8 @@ const SubContainer = styled.div`
   width: 70%;
   background-color: #f5fafa;
   padding: 24px;
+  border-radius: 6px;
+  height: 100%;
 `;
 
 const Info = styled.div`
