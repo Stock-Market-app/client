@@ -6,6 +6,7 @@ import { Login } from "./screens/Login";
 import { Dashboard } from "./screens/Dashboard.js";
 import { IndividualStock } from "./screens/IndividualStock";
 import { WatchList } from "./screens/WatchList";
+import { Tester } from "./screens/Tester";
 
 const Switch = () => {
   return (
@@ -16,6 +17,7 @@ const Switch = () => {
         <Route path="/dashboard" exact element={<Dashboard />} />
         <Route path="/stock/:id" exact element={<IndividualStock />} />
         <Route path="/watchlist" exact element={<WatchList />} />
+        <Route path="/test" exact element={<Tester />} />
       </Routes>
     </Router>
   );

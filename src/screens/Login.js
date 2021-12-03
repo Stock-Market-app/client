@@ -85,7 +85,7 @@ export const Login = () => {
 };
 
 const Wrapper = styled.div`
-  background: #e3e7eb;
+  background: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: center;

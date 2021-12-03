@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -33,11 +34,23 @@ ChartJS.register(
 //   },
 // };
 
-export const Chart = ({ label, df }) => {
+export const Chart = ({ label, df, margin = 0 }) => {
   const data = {
     labels: label,
     datasets: df,
   };
 
-  return <Line data={data} />;
+  return (
+    <Container margin={margin}>
+      <Line data={data} />
+    </Container>
+  );
 };
+
+const Container = styled.div`
+  width: 90%;
+  margin-right: ${(props) => props.margin};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

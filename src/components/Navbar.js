@@ -14,6 +14,11 @@ export const Navbar = () => {
 
   const logoutHandler = async () => {
     await dispatch(authActions.logout());
+    navigate("/");
+  };
+
+  const loginHandler = () => {
+    navigate("/");
   };
 
   const watchlistHandler = () => {
@@ -26,25 +31,39 @@ export const Navbar = () => {
       <h4 onClick={() => navigate("/dashboard")}>Hello {username}!</h4>
       <h2>Welcome to StockStop</h2>
       <div>
-        <Button onClick={watchlistHandler} color="#04abeb">
-          Watchlist
-        </Button>
-        <Button onClick={logoutHandler} color="#b52a46">
-          Logout
-        </Button>
+        {token && (
+          <a
+            onClick={watchlistHandler}
+            href="#"
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            Watchlist
+          </a>
+        )}
+        {token && (
+          <Button onClick={logoutHandler} color="#b52a46">
+            Logout
+          </Button>
+        )}
+        {!token && (
+          <Button onClick={loginHandler} color="#be41e0">
+            Login
+          </Button>
+        )}
       </div>
     </NavbarContainer>
   );
 };
 
 const NavbarContainer = styled.div`
-  background: #ffffff;
+  // background: #ffffff;
   display: flex;
   width: 80%;
   border-top-right-radius: 12px;
   border-top-left-radius: 12px;
   align-items: center;
   justify-content: space-between;
+  color: black;
 
   > h2 {
     text-decoration: underline;
