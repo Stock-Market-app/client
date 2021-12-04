@@ -8,6 +8,7 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import Switch from "./Switch";
 import AuthReducer from "./store/reducers/auth";
+import StocksReducer from "./store/reducers/stocks";
 
 export const App = () => {
   const persistConfig = {
@@ -17,6 +18,7 @@ export const App = () => {
 
   const rootReducer = combineReducers({
     Auth: AuthReducer,
+    Stocks: StocksReducer,
   });
 
   const persistedReducer = persistReducer(persistConfig, rootReducer);

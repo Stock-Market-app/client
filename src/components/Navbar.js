@@ -64,6 +64,8 @@ const NavbarContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   color: black;
+  position: sticky;
+  top: 0;
 
   > h2 {
     text-decoration: underline;

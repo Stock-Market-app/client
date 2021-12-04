@@ -15,29 +15,22 @@ export const Login = () => {
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setIsLoading] = useState(false);
-  const [error, setIsError] = useState(false);
 
   const loginHandler = async () => {
     // console.log(email, password);
     try {
       if (username && password) {
-        setIsLoading(true);
-        if (loading) toast.info("Logging In ...");
+        toast.info("Logging In ...", { autoClose: 1000 });
         await dispatch(authActions.login(username, password));
         setUserName("");
         setPassword("");
-        setIsLoading(false);
-        setIsError(false);
         navigate("/dashboard");
       } else {
-        setIsError(true);
-        if (error) toast.warning("Please fill username and password");
+        toast.warning("Please fill username and password", { autoClose: 2500 });
       }
     } catch (error) {
-      setIsError(true);
-      if (error) toast.error("Invalid username / password");
-      setIsError(false);
+      if (error)
+        toast.error("Invalid username / password", { autoClose: 2500 });
     }
   };
 
@@ -94,6 +87,7 @@ const Wrapper = styled.div`
 
 const SubContainer = styled.div`
   background: #ffffff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   display: grid;
   grid-template-columns: 50% 50%;
   margin: 20px;

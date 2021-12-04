@@ -19,15 +19,12 @@ export const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [check, setCheck] = useState("");
-  const [loading, setIsLoading] = useState(false);
-  const [error, setIsError] = useState(false);
 
   const signUpHandler = async () => {
     // console.log(first_name, last_name, email, password, confirmPass);
     try {
       if (first_name && last_name && email && password && confirmPass) {
-        setIsLoading(true);
-        if (loading) toast.info("Signing Up...");
+        toast.info("Signing Up...", { autoClose: 1000 });
         await dispatch(
           authActions.signUp(
             first_name,
@@ -42,18 +39,12 @@ export const SignUp = () => {
         setEmail("");
         setPassword("");
         setConfirmPass("");
-        setIsLoading(false);
-        toast.success("Sign up successful");
+        toast.success("Sign up successful", { autoClose: 2500 });
       } else {
-        setIsError(true);
-        setIsLoading(false);
-        if (error) toast.warning("Please fill all the fields");
+        toast.warning("Please fill all the fields", { autoClose: 2500 });
       }
     } catch (error) {
-      setIsError(true);
-      setIsLoading(false);
-      if (error) toast.error("Email already taken");
-      setIsError(false);
+      toast.error("Email already taken", { autoClose: 2500 });
     }
   };
 
@@ -147,6 +138,7 @@ const SubContainer = styled.div`
   grid-template-columns: 50% 50%;
   margin: 20px;
   border-radius: 12px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 
 const Left = styled.div`

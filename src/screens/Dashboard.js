@@ -1,24 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
 import { Navbar } from "../components/Navbar";
 import { GainCard } from "../components/GainCard";
 import { Chart } from "../components/Chart";
+import { ListCard } from "../components/ListCard";
+import * as stocksAction from "../store/actions/stocks";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const token = useSelector((state) => state.Auth.token);
+  var gainer = useSelector((state) => state.Stocks.gainers);
+  var random = useSelector((state) => state.Stocks.random);
+
   const [searchItem, setSearchItem] = useState("");
   const [filteredList, setFilteredList] = useState([]);
+
+  // const gainers = [
+  //   {
+  //     name: "Vodafone",
+  //     value: "14.05",
+  //     percentage: "9.77",
+  //   },
+  //   {
+  //     name: "Gujarat Alkalie",
+  //     value: "654.00",
+  //     percentage: "8.15",
+  //   },
+  //   {
+  //     name: "Gujarat Fluorochem",
+  //     value: "2464.45",
+  //     percentage: "6.44",
+  //   },
+  //   {
+  //     name: "Elgi Equipments",
+  //     value: "292.00",
+  //     percentage: "6.22",
+  //   },
+  // ];
+
+  const getGainersHandler = async () => {
+    await dispatch(stocksAction.getGainers());
+  };
+
+  const getRandomStocks = async () => {
+    await dispatch(stocksAction.getRandomStocks());
+  };
+
+  useEffect(() => {
+    getGainersHandler();
+    getRandomStocks();
+  }, []);
+
+  // console.log(gainer);
+
+  // const getStatus = () => {
+  //   fetch("http://localhost:3000/get_market_status")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data.status === "closed") return false;
+  //       return true;
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   const handleSearch = (key) => {
     if (!token) return;
     var filtered = [];
-    console.log("here");
+    // console.log("here");
     if (key.length > 0) {
-      filtered = stocks.filter((item) => item.name.includes(`${key}`));
+      filtered = stocks.filter((item) =>
+        item.toLowerCase().includes(`${key.toLowerCase()}`)
+      );
       setFilteredList(filtered);
     } else {
       setFilteredList([]);
@@ -50,6 +109,9 @@ export const Dashboard = () => {
 
     return hour + ":" + min;
   };
+
+  gainer = gainer.slice(0, 5);
+  random = random.slice(5, 15);
 
   return (
     <Wrapper>
@@ -87,11 +149,11 @@ export const Dashboard = () => {
                     return (
                       <p
                         onClick={() => {
-                          setSearchItem(item.name);
+                          setSearchItem(item);
                           setFilteredList([]);
                         }}
                       >
-                        {item.name}
+                        {item}
                       </p>
                     );
                   })}
@@ -103,11 +165,11 @@ export const Dashboard = () => {
                     return (
                       <p
                         onClick={() => {
-                          setSearchItem(item.name);
+                          setSearchItem(item);
                           setFilteredList([]);
                         }}
                       >
-                        {item.name}
+                        {item}
                       </p>
                     );
                   })}
@@ -144,19 +206,86 @@ export const Dashboard = () => {
                 <Right>
                   <p style={{ fontWeight: "900" }}>Top Gainers</p>
                   <GainData>
-                    {gainers.map((item) => {
+                    {gainer?.map((item) => {
                       return (
                         <GainCard
-                          name={item.name}
-                          value={item.value}
-                          percentage={item.percentage}
+                          name={item.symbol}
+                          value={item.highPrice}
+                          percentage={item.netPrice}
                         />
                       );
                     })}
                   </GainData>
                 </Right>
               </Top>
-              <Bottom></Bottom>
+              <Bottom>
+                {random.map((item) => {
+                  return (
+                    <ListCard
+                      name={item.symbol}
+                      high={item.high}
+                      low={item.low}
+                      close={item.dayEndClose}
+                    />
+                  );
+                })}
+                {/* <ListCard
+                  name="Netflix"
+                  price="3104.65"
+                  high="3140.34"
+                  low="3024.44"
+                  volume="6573522"
+                />
+                <ListCard
+                  name="Amazon"
+                  price="5704.65"
+                  high="5840.34"
+                  low="5524.44"
+                  volume="7456293"
+                />
+                <ListCard
+                  name="Netflix"
+                  price="3104.65"
+                  high="3140.34"
+                  low="3024.44"
+                  volume="6573522"
+                />
+                <ListCard
+                  name="Amazon"
+                  price="5704.65"
+                  high="5840.34"
+                  low="5524.44"
+                  volume="7456293"
+                />
+                <ListCard
+                  name="Netflix"
+                  price="3104.65"
+                  high="3140.34"
+                  low="3024.44"
+                  volume="6573522"
+                />
+                <ListCard
+                  name="Amazon"
+                  price="5704.65"
+                  high="5840.34"
+                  low="5524.44"
+                  volume="7456293"
+                />
+                <ListCard
+                  name="Netflix"
+                  price="3104.65"
+                  high="3140.34"
+                  low="3024.44"
+                  volume="6573522"
+                />
+                <ListCard
+                  name="Amazon"
+                  price="5704.65"
+                  high="5840.34"
+                  low="5524.44"
+                  volume="7456293"
+                /> */}
+              </Bottom>
             </StocksArea>
           </DashInfo>
         </MainContainer>
@@ -232,6 +361,29 @@ const SearchArea = styled.div`
   justify-content: flex-start;
   padding: 12px 0;
   border-right: 2px solid #24e3d0;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #ffeeee;
+    border-radius: 12px;
+    // margin-top: 36px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #444;
+    border-radius: 12px;
+  }
 `;
 
 const StocksArea = styled.div`
@@ -239,26 +391,29 @@ const StocksArea = styled.div`
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
-`;
 
-// const SearchContainer = styled.div`
-//   display: flex;
-//   align-items: center;
-//   border: 1px solid gray;
-//   width: 90%;
-//   flex-wrap: nowrap;
-//   padding: 6px;
-//   position: fixed;
-//   outline: none;
-//   border: none;
-//   text-align: center;
-//   grid-auto-rows: minmax(100px, auto);
-//   float: left;
-//   height: 90px;
-//   border-radius: 6px;
-//   justify-content: space-around;
-//   margin: 12px 32px;
-// `;
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #ffeeee;
+    border-radius: 12px;
+    // margin-top: 36px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #444;
+    border-radius: 12px;
+  }
+`;
 
 const SearchContainer = styled.div`
   //   background: #0e2e60;
@@ -309,8 +464,9 @@ const GainData = styled.div`
 `;
 
 const Bottom = styled.div`
-  background: red;
   flex-grow: 1;
+  width: 96%;
+  padding-bottom: 48px;
 `;
 
 const First = styled.div`
@@ -380,40 +536,218 @@ const months = [
   "Dec",
 ];
 
-const gainers = [
-  {
-    name: "Vodafone",
-    value: "14.05",
-    percentage: "9.77",
-  },
-  {
-    name: "Gujarat Alkalie",
-    value: "654.00",
-    percentage: "8.15",
-  },
-  {
-    name: "Gujarat Fluorochem",
-    value: "2464.45",
-    percentage: "6.44",
-  },
-  {
-    name: "Elgi Equipments",
-    value: "292.00",
-    percentage: "6.22",
-  },
-];
-
 const stocks = [
-  { name: "Adani Ports", id: 1 },
-  { name: "Apple", id: 2 },
-  { name: "Infosys", id: 3 },
-  { name: "Airtel", id: 4 },
-  { name: "Tata", id: 5 },
-  { name: "Ambuja Cement", id: 6 },
-  { name: "Wipro", id: 7 },
-  { name: "ICICI Bank", id: 8 },
-  { name: "Amazon", id: 9 },
-  { name: "Flipkart", id: 10 },
+  // { name: "Adani Ports", id: 1 },
+  // { name: "Apple", id: 2 },
+  // { name: "Infosys", id: 3 },
+  // { name: "Airtel", id: 4 },
+  // { name: "Tata", id: 5 },
+  // { name: "Ambuja Cement", id: 6 },
+  // { name: "Wipro", id: 7 },
+  // { name: "ICICI Bank", id: 8 },
+  // { name: "Amazon", id: 9 },
+  // { name: "Flipkart", id: 10 },
+  "    ACC",
+  "ADANIENT",
+  "ADANIPORTS",
+  "ADANIPOWER",
+  "AJANTPHARM",
+  "ALBK",
+  "AMARAJABAT",
+  "AMBUJACEM",
+  "APOLLOHOSP",
+  "APOLLOTYRE",
+  "ARVIND",
+  "ASHOKLEY",
+  "ASIANPAINT",
+  "AUROPHARMA",
+  "AXISBANK",
+  "BAJAJ - AUTO",
+  "BAJFINANCE",
+  "BAJAJFINSV",
+  "BALKRISIND",
+  "BANKBARODA",
+  "BANKINDIA",
+  "BATAINDIA",
+  "BEML",
+  "BERGEPAINT",
+  "    BEL",
+  "BHARATFIN",
+  "BHARATFORG",
+  "BPCL",
+  "BHARTIARTL",
+  "INFRATEL",
+  "BHEL",
+  "BIOCON",
+  "BOSCHLTD",
+  "BRITANNIA",
+  "CADILAHC",
+  "CANFINHOME",
+  "CANBK",
+  "CAPF",
+  "CASTROLIND",
+  "CEATLTD",
+  "CENTURYTEX",
+  "CESC",
+  "CGPOWER",
+  "CHENNPETRO",
+  "CHOLAFIN",
+  "CIPLA",
+  "COALINDIA",
+  "COLPAL",
+  "CONCOR",
+  "CUMMINSIND",
+  "DABUR",
+  "DCBBANK",
+  "DHFL",
+  "DISHTV",
+  "DIVISLAB",
+  "    DLF",
+  "DRREDDY",
+  "EICHERMOT",
+  "ENGINERSIN",
+  "EQUITAS",
+  "ESCORTS",
+  "EXIDEIND",
+  "FEDERALBNK",
+  "GAIL",
+  "GLENMARK",
+  "GMRINFRA",
+  "GODFRYPHLP",
+  "GODREJCP",
+  "GODREJIND",
+  "GRASIM",
+  "GSFC",
+  "HAVELLS",
+  "HCLTECH",
+  "HDFCBANK",
+  "HDFC",
+  "HEROMOTOCO",
+  "HEXAWARE",
+  "HINDALCO",
+  "HINDPETRO",
+  "HINDUNILVR",
+  "HINDZINC",
+  "ICICIBANK",
+  "ICICIPRULI",
+  "IDBI",
+  "IDEA",
+  "IDFCBANK",
+  "IDFC",
+  "IFCI",
+  "IBULHSGFIN",
+  "INDIANB",
+  "    IOC",
+  "    IGL",
+  "INDUSINDBK",
+  "INFIBEAM",
+  "INFY",
+  "INDIGO",
+  "    IRB",
+  "    ITC",
+  "JISLJALEQS",
+  "JPASSOCIAT",
+  "JETAIRWAYS",
+  "JINDALSTEL",
+  "JSWSTEEL",
+  "JUBLFOOD",
+  "JUSTDIAL",
+  "KAJARIACER",
+  "KTKBANK",
+  "KSCL",
+  "KOTAKBANK",
+  "KPIT",
+  "L & TFH",
+  "LT",
+  "LICHSGFIN",
+  "LUPIN",
+  "M & MFIN",
+  "    MGL",
+  "M & M",
+  "MANAPPURAM",
+  "MRPL",
+  "MARICO",
+  "MARUTI",
+  "MFSL",
+  "MINDTREE",
+  "MOTHERSUMI",
+  "    MRF",
+  "    MCX",
+  "MUTHOOTFIN",
+  "NATIONALUM",
+  "NBCC",
+  "    NCC",
+  "NESTLEIND",
+  "NHPC",
+  "NIITTECH",
+  "NMDC",
+  "NTPC",
+  "ONGC",
+  "    OIL",
+  "OFSS",
+  "ORIENTBANK",
+  "PAGEIND",
+  "PCJEWELLER",
+  "PETRONET",
+  "PIDILITIND",
+  "    PEL",
+  "    PFC",
+  "POWERGRID",
+  "    PTC",
+  "    PNB",
+  "    PVR",
+  "RAYMOND",
+  "RBLBANK",
+  "RELCAPITAL",
+  "RCOM",
+  "RELIANCE",
+  "RELINFRA",
+  "RPOWER",
+  "REPCOHOME",
+  "RECLTD",
+  "SHREECEM",
+  "SRTRANSFIN",
+  "SIEMENS",
+  "SREINFRA",
+  "    SRF",
+  "SBIN",
+  "SAIL",
+  "STAR",
+  "SUNPHARMA",
+  "SUNTV",
+  "SUZLON",
+  "SYNDIBANK",
+  "TATACHEM",
+  "TATACOMM",
+  "    TCS",
+  "TATAELXSI",
+  "TATAGLOBAL",
+  "TATAMTRDVR",
+  "TATAMOTORS",
+  "TATAPOWER",
+  "TATASTEEL",
+  "TECHM",
+  "INDIACEM",
+  "RAMCOCEM",
+  "SOUTHBANK",
+  "TITAN",
+  "TORNTPHARM",
+  "TORNTPOWER",
+  "TV18BRDCST",
+  "TVSMOTOR",
+  "UJJIVAN",
+  "ULTRACEMCO",
+  "UNIONBANK",
+  "    UBL",
+  "MCDOWELL - N",
+  "    UPL",
+  "VEDL",
+  "VGUARD",
+  "VOLTAS",
+  "WIPRO",
+  "WOCKPHARMA",
+  "YESBANK",
+  "ZEEL",
 ];
 
 const label = ["Jan", "Feb", "Mar", "Apr", "May"];

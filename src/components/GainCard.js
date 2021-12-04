@@ -7,7 +7,7 @@ export const GainCard = ({ name, value, percentage }) => {
       <Container>
         <span>{name}</span>
         <span>
-          {value} ({percentage}%)
+          {value} ({percentage})
         </span>
       </Container>
       <hr
@@ -25,5 +25,5 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-top: 8px;
 `;
