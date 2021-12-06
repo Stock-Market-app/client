@@ -1,13 +1,19 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router";
 
-export const ListCard = ({ name, high, low, ltP }) => {
+export const ListCard = ({ name, high, low, ltP, token, setCurrent }) => {
+  const navigate = useNavigate();
   return (
-    <Container>
-      <Top>{name}</Top>
+    <Container
+      onClick={() => {
+        token && setCurrent(name) && navigate(`/stock/${name}`);
+      }}
+    >
+      <Top style={{ color: "gray" }}>{name}</Top>
       <Bottom>
-        <span>High: {high}</span>
-        <span>Low: {low}</span>
+        <span style={{ color: "green" }}>High: {high}</span>
+        <span style={{ color: "red" }}>Low: {low}</span>
         <span>Last Traded Price: {ltP}</span>
       </Bottom>
     </Container>
@@ -25,9 +31,10 @@ const Container = styled.div`
 `;
 
 const Top = styled.div`
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 800;
   margin-bottom: 24px;
+  display: flex;
 `;
 
 const Bottom = styled.div`

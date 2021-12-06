@@ -46,7 +46,12 @@ export const login = (username, password) => {
 
 export const logout = () => {
   return async (dispatch) => {
-    localStorage.clear();
-    dispatch({ type: LOGOUT_USER });
+    try {
+      await axios.get("/account/logout");
+      localStorage.clear();
+      dispatch({ type: LOGOUT_USER });
+    } catch (error) {
+      throw new Error();
+    }
   };
 };

@@ -73,7 +73,6 @@ const NavbarContainer = styled.div`
   top: 0;
 
   > h2 {
-    text-decoration: underline;
     margin: 18px;
     cursor: none;
   }

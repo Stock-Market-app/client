@@ -3,9 +3,12 @@ import {
   GET_LOSERS,
   GET_RANDOM_STOCKS,
   CURRENT_STOCK,
+  SET_WATCHLIST,
+  CHANGE_WATCHLIST,
 } from "../actions/stocks";
 
 const initState = {
+  watcher: [],
   gainers: [],
   losers: [],
   random: [],
@@ -36,6 +39,18 @@ export default function StocksReducer(state = initState, action) {
       return {
         ...state,
         current: action.payload.name,
+      };
+    }
+    // case SET_WATCHLIST: {
+    //   return {
+    //     ...state,
+    //     watchlist: action.payload.watchlist,
+    //   };
+    // }
+    case CHANGE_WATCHLIST: {
+      return {
+        ...state,
+        watcher: action.payload.watchlist,
       };
     }
     default: {

@@ -8,6 +8,7 @@ import { GainCard } from "../components/GainCard";
 import { Chart } from "../components/Chart";
 import { ListCard } from "../components/ListCard";
 import * as stocksAction from "../store/actions/stocks";
+import { dates, Nifty50, Sensex } from "../assets/data/historical";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ export const Dashboard = () => {
   var gainer = useSelector((state) => state.Stocks.gainers);
   var loser = useSelector((state) => state.Stocks.losers);
   var random = useSelector((state) => state.Stocks.random);
+  const current = useSelector((state) => state.Stocks.current);
+  console.log(current);
 
   const [NIFTY50, setNIFTY50] = useState();
   const [SENSEX, setSENSEX] = useState();
@@ -25,8 +28,8 @@ export const Dashboard = () => {
   const [filteredList, setFilteredList] = useState([]);
   const [topList, setTopList] = useState("gainer");
 
-  const setCurrent = async () => {
-    await dispatch(stocksAction.current_stock({ name: searchItem }));
+  const setCurrent = async (item) => {
+    await dispatch(stocksAction.current_stock({ name: item }));
   };
 
   const getGainersHandler = async () => {
@@ -57,23 +60,8 @@ export const Dashboard = () => {
 
   const getStatus = async () => {
     const response = await fetch("http://localhost:5000/get_market_status");
-
     const res = await response.json();
     setStatus(res.status);
-  };
-
-  const getChartData = async () => {
-    const response = await fetch(
-      "http://localhost:5000/nse/get_intra_day_data?companyName=TCS&time=month"
-    );
-    const res = await response.text();
-    // var result = convert.xml2json(res.body, {
-    //   compact: false,
-    //   spaces: 4,
-    // });
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(res, "text/xml");
-    console.log(xmlDoc.body);
   };
 
   useEffect(() => {
@@ -83,7 +71,6 @@ export const Dashboard = () => {
     getRandomStocks();
     getNifty();
     getSensex();
-    // getChartData();
   }, []);
 
   // console.log(gainer);
@@ -165,7 +152,9 @@ export const Dashboard = () => {
                   className="fas fa-search"
                   style={{ marginRight: "12px", color: "#87eaed" }}
                   onClick={() =>
-                    token && setCurrent() && navigate(`/stock/${searchItem}`)
+                    token &&
+                    setCurrent(searchItem) &&
+                    navigate(`/stock/${searchItem}`)
                   }
                 ></i>
               </SearchContainer>
@@ -283,7 +272,6 @@ export const Dashboard = () => {
                     style={{
                       display: "flex",
                       justifyContent: "space-around",
-                      textDecoration: "underline",
                     }}
                   >
                     <p
@@ -313,6 +301,7 @@ export const Dashboard = () => {
                             name={item.symbol}
                             value={item.highPrice}
                             percentage={item.netPrice}
+                            color="green"
                           />
                         );
                       })}
@@ -326,6 +315,7 @@ export const Dashboard = () => {
                             name={item.symbol}
                             value={item.highPrice}
                             percentage={item.netPrice}
+                            color="red"
                           />
                         );
                       })}
@@ -338,9 +328,13 @@ export const Dashboard = () => {
                   return (
                     <ListCard
                       name={item.symbol}
+                      // companyName={item.companyName}
                       high={item.high}
                       low={item.low}
                       ltP={item.ltP}
+                      token={token}
+                      setCurrent={setCurrent}
+                      onClick={() => token && console.log("here")}
                     />
                   );
                 })}
@@ -364,11 +358,11 @@ const Wrapper = styled.div`
 
 const SubWrapper = styled.div`
   background: #f5f5f5;
-  // border-radius: 12px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 96%;
   height: 94%;
 `;
 
@@ -405,7 +399,7 @@ const MainContainer = styled.div`
 `;
 
 const DashInfo = styled.div`
-  background: white;
+  // background: #f3ffff;
   display: flex;
   // border-radius: 12px;
   height: 94%;
@@ -419,7 +413,7 @@ const SearchArea = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 12px 0;
-  border-right: 2px solid #24e3d0;
+  // border-right: 2px solid #24e3d0;
 `;
 
 const StocksArea = styled.div`
@@ -776,14 +770,14 @@ const stocks = [
   "ZEEL",
 ];
 
-const label = ["Jan", "Feb", "Mar", "Apr", "May"];
+const label = dates;
 const df = [
   {
-    label: "Data for Nifty",
-    data: [3, 2, 2, 1, 5],
+    label: "Data for Nifty50",
+    data: Nifty50,
   },
   {
     label: "Data for Sensex",
-    data: [2.8, 1.2, 4, 3.1, 3.6],
+    data: Sensex,
   },
 ];

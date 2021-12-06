@@ -1,13 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-export const GainCard = ({ name, value, percentage }) => {
+export const GainCard = ({ name, value, percentage, color }) => {
   return (
     <>
       <Container>
         <span>{name}</span>
         <span>
-          {value} ({percentage})
+          <span>{value}</span>(
+          <span style={{ color: `${color}` }}>{percentage}</span>)
         </span>
       </Container>
       <hr
