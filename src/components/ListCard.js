@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-export const ListCard = ({ name, high, low, close }) => {
+export const ListCard = ({ name, high, low, ltP }) => {
   return (
     <Container>
       <Top>{name}</Top>
       <Bottom>
         <span>High: {high}</span>
         <span>Low: {low}</span>
-        <span>Close: {close}</span>
+        <span>Last Traded Price: {ltP}</span>
       </Bottom>
     </Container>
   );

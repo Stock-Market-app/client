@@ -15,45 +15,75 @@ export const Dashboard = () => {
 
   const token = useSelector((state) => state.Auth.token);
   var gainer = useSelector((state) => state.Stocks.gainers);
+  var loser = useSelector((state) => state.Stocks.losers);
   var random = useSelector((state) => state.Stocks.random);
 
+  const [NIFTY50, setNIFTY50] = useState();
+  const [SENSEX, setSENSEX] = useState();
+  const [status, setStatus] = useState("closed");
   const [searchItem, setSearchItem] = useState("");
   const [filteredList, setFilteredList] = useState([]);
+  const [topList, setTopList] = useState("gainer");
 
-  // const gainers = [
-  //   {
-  //     name: "Vodafone",
-  //     value: "14.05",
-  //     percentage: "9.77",
-  //   },
-  //   {
-  //     name: "Gujarat Alkalie",
-  //     value: "654.00",
-  //     percentage: "8.15",
-  //   },
-  //   {
-  //     name: "Gujarat Fluorochem",
-  //     value: "2464.45",
-  //     percentage: "6.44",
-  //   },
-  //   {
-  //     name: "Elgi Equipments",
-  //     value: "292.00",
-  //     percentage: "6.22",
-  //   },
-  // ];
+  const setCurrent = async () => {
+    await dispatch(stocksAction.current_stock({ name: searchItem }));
+  };
 
   const getGainersHandler = async () => {
     await dispatch(stocksAction.getGainers());
+  };
+
+  const getLosersHandler = async () => {
+    await dispatch(stocksAction.getLosers());
   };
 
   const getRandomStocks = async () => {
     await dispatch(stocksAction.getRandomStocks());
   };
 
+  const getNifty = async () => {
+    const response = await fetch("http://localhost:5000/nse/get_indices");
+
+    const res = await response.json();
+    setNIFTY50(res.data[0].previousClose);
+  };
+
+  const getSensex = async () => {
+    const response = await fetch("http://localhost:5000/bse/get_indices");
+
+    const res = await response.json();
+    setSENSEX(res[0].todayClose);
+  };
+
+  const getStatus = async () => {
+    const response = await fetch("http://localhost:5000/get_market_status");
+
+    const res = await response.json();
+    setStatus(res.status);
+  };
+
+  const getChartData = async () => {
+    const response = await fetch(
+      "http://localhost:5000/nse/get_intra_day_data?companyName=TCS&time=month"
+    );
+    const res = await response.text();
+    // var result = convert.xml2json(res.body, {
+    //   compact: false,
+    //   spaces: 4,
+    // });
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(res, "text/xml");
+    console.log(xmlDoc.body);
+  };
+
   useEffect(() => {
+    getStatus();
     getGainersHandler();
+    getLosersHandler();
     getRandomStocks();
+    getNifty();
+    getSensex();
+    // getChartData();
   }, []);
 
   // console.log(gainer);
@@ -111,6 +141,7 @@ export const Dashboard = () => {
   };
 
   gainer = gainer.slice(0, 5);
+  loser = loser.slice(0, 5);
   random = random.slice(5, 15);
 
   return (
@@ -133,7 +164,9 @@ export const Dashboard = () => {
                 <i
                   className="fas fa-search"
                   style={{ marginRight: "12px", color: "#87eaed" }}
-                  onClick={() => token && navigate(`/stock/${searchItem}`)}
+                  onClick={() =>
+                    token && setCurrent() && navigate(`/stock/${searchItem}`)
+                  }
                 ></i>
               </SearchContainer>
               <hr
@@ -179,43 +212,125 @@ export const Dashboard = () => {
             <StocksArea>
               <Top>
                 <Left>
-                  <p style={{ fontSize: "16px" }}>
-                    <span style={{ color: "brown", fontWeight: "700" }}>
-                      LIVE
-                    </span>{" "}
-                    - {timeProvider()} | {dateProvider()}
-                  </p>
+                  {status === "closed" && (
+                    <p
+                      style={{
+                        fontSize: "16px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "black",
+                          fontWeight: "700",
+                          backgroundColor: "red",
+                          opacity: "0.9",
+                          paddingTop: "6px",
+                          paddingRight: "6px",
+                          paddingLeft: "6px",
+                        }}
+                      >
+                        LIVE
+                      </span>{" "}
+                      - {timeProvider()} | {dateProvider()}
+                    </p>
+                  )}
+                  {status === "open" && (
+                    <p
+                      style={{
+                        fontSize: "16px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "yellow",
+                          fontWeight: "700",
+                          backgroundColor: "green",
+                          opacity: "0.7",
+                          paddingTop: "6px",
+                          paddingRight: "6px",
+                          paddingLeft: "6px",
+                        }}
+                      >
+                        LIVE
+                      </span>{" "}
+                      - {timeProvider()} | {dateProvider()}
+                    </p>
+                  )}
                   <div style={{ display: "flex" }}>
                     <div style={{ width: "40%" }}>
                       <First>
                         <h5 style={{ marginBottom: "4px" }}>SENSEX</h5>
-                        <h1 style={{ margin: 0, fontFamily: "sans-serif" }}>
-                          2345
-                        </h1>
+                        {SENSEX && (
+                          <h3 style={{ margin: 0, fontFamily: "sans-serif" }}>
+                            {SENSEX}
+                          </h3>
+                        )}
                       </First>
                       <First>
                         <h5 style={{ marginBottom: "4px" }}>NIFTY</h5>
-                        <h1 style={{ margin: 0, fontFamily: "sans-serif" }}>
-                          3124
-                        </h1>
+                        {NIFTY50 && (
+                          <h3 style={{ margin: 0, fontFamily: "sans-serif" }}>
+                            {NIFTY50}
+                          </h3>
+                        )}
                       </First>
                     </div>
                     <Chart label={label} df={df} margin="12px" />
                   </div>
                 </Left>
                 <Right>
-                  <p style={{ fontWeight: "900" }}>Top Gainers</p>
-                  <GainData>
-                    {gainer?.map((item) => {
-                      return (
-                        <GainCard
-                          name={item.symbol}
-                          value={item.highPrice}
-                          percentage={item.netPrice}
-                        />
-                      );
-                    })}
-                  </GainData>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-around",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontWeight: topList === "gainer" ? "900" : "400",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setTopList("gainer")}
+                    >
+                      Top Gainers
+                    </p>
+                    <p
+                      style={{
+                        fontWeight: topList === "loser" ? "900" : "400",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setTopList("loser")}
+                    >
+                      Top Losers
+                    </p>
+                  </div>
+                  {topList === "gainer" && (
+                    <GainData>
+                      {gainer?.map((item) => {
+                        return (
+                          <GainCard
+                            name={item.symbol}
+                            value={item.highPrice}
+                            percentage={item.netPrice}
+                          />
+                        );
+                      })}
+                    </GainData>
+                  )}
+                  {topList === "loser" && (
+                    <GainData>
+                      {loser?.map((item) => {
+                        return (
+                          <GainCard
+                            name={item.symbol}
+                            value={item.highPrice}
+                            percentage={item.netPrice}
+                          />
+                        );
+                      })}
+                    </GainData>
+                  )}
                 </Right>
               </Top>
               <Bottom>
@@ -225,66 +340,10 @@ export const Dashboard = () => {
                       name={item.symbol}
                       high={item.high}
                       low={item.low}
-                      close={item.dayEndClose}
+                      ltP={item.ltP}
                     />
                   );
                 })}
-                {/* <ListCard
-                  name="Netflix"
-                  price="3104.65"
-                  high="3140.34"
-                  low="3024.44"
-                  volume="6573522"
-                />
-                <ListCard
-                  name="Amazon"
-                  price="5704.65"
-                  high="5840.34"
-                  low="5524.44"
-                  volume="7456293"
-                />
-                <ListCard
-                  name="Netflix"
-                  price="3104.65"
-                  high="3140.34"
-                  low="3024.44"
-                  volume="6573522"
-                />
-                <ListCard
-                  name="Amazon"
-                  price="5704.65"
-                  high="5840.34"
-                  low="5524.44"
-                  volume="7456293"
-                />
-                <ListCard
-                  name="Netflix"
-                  price="3104.65"
-                  high="3140.34"
-                  low="3024.44"
-                  volume="6573522"
-                />
-                <ListCard
-                  name="Amazon"
-                  price="5704.65"
-                  high="5840.34"
-                  low="5524.44"
-                  volume="7456293"
-                />
-                <ListCard
-                  name="Netflix"
-                  price="3104.65"
-                  high="3140.34"
-                  low="3024.44"
-                  volume="6573522"
-                />
-                <ListCard
-                  name="Amazon"
-                  price="5704.65"
-                  high="5840.34"
-                  low="5524.44"
-                  volume="7456293"
-                /> */}
               </Bottom>
             </StocksArea>
           </DashInfo>
@@ -305,11 +364,11 @@ const Wrapper = styled.div`
 
 const SubWrapper = styled.div`
   background: #f5f5f5;
-  border-radius: 12px;
+  // border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 99%;
+  width: 100%;
   height: 94%;
 `;
 
@@ -319,13 +378,13 @@ const MainContainer = styled.div`
   //   justify-content: center;
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
+  // border-radius: 12px;
   height: 94%;
-  width: 99%;
+  width: 100%;
   overflow-y: scroll;
 
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -348,42 +407,19 @@ const MainContainer = styled.div`
 const DashInfo = styled.div`
   background: white;
   display: flex;
-  border-radius: 12px;
+  // border-radius: 12px;
   height: 94%;
-  width: 96%;
+  width: 100%;
 `;
 
 const SearchArea = styled.div`
   display: flex;
   flex-direction: column;
-  width: 25%;
+  width: 20%;
   align-items: center;
   justify-content: flex-start;
   padding: 12px 0;
   border-right: 2px solid #24e3d0;
-
-  overflow-y: scroll;
-  overflow-x: hidden;
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #ffeeee;
-    border-radius: 12px;
-    // margin-top: 36px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #999;
-    border-radius: 12px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #444;
-    border-radius: 12px;
-  }
 `;
 
 const StocksArea = styled.div`
@@ -395,7 +431,7 @@ const StocksArea = styled.div`
   overflow-y: scroll;
 
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 2px;
   }
 
   ::-webkit-scrollbar-track {
@@ -429,7 +465,7 @@ const SearchContainer = styled.div`
 const SearchBar = styled.input`
   width: 60%;
   height: 20%;
-
+  text-transform: capitalize;
   padding: 12px 8px;
   border: none;
   outline: none;
@@ -490,7 +526,7 @@ const SearchHints = styled.div`
   overflow-x: hidden;
 
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
 
   ::-webkit-scrollbar-track {
@@ -537,17 +573,7 @@ const months = [
 ];
 
 const stocks = [
-  // { name: "Adani Ports", id: 1 },
-  // { name: "Apple", id: 2 },
-  // { name: "Infosys", id: 3 },
-  // { name: "Airtel", id: 4 },
-  // { name: "Tata", id: 5 },
-  // { name: "Ambuja Cement", id: 6 },
-  // { name: "Wipro", id: 7 },
-  // { name: "ICICI Bank", id: 8 },
-  // { name: "Amazon", id: 9 },
-  // { name: "Flipkart", id: 10 },
-  "    ACC",
+  "ACC",
   "ADANIENT",
   "ADANIPORTS",
   "ADANIPOWER",
@@ -571,7 +597,7 @@ const stocks = [
   "BATAINDIA",
   "BEML",
   "BERGEPAINT",
-  "    BEL",
+  "BEL",
   "BHARATFIN",
   "BHARATFORG",
   "BPCL",
@@ -602,7 +628,7 @@ const stocks = [
   "DHFL",
   "DISHTV",
   "DIVISLAB",
-  "    DLF",
+  "DLF",
   "DRREDDY",
   "EICHERMOT",
   "ENGINERSIN",
@@ -637,14 +663,14 @@ const stocks = [
   "IFCI",
   "IBULHSGFIN",
   "INDIANB",
-  "    IOC",
-  "    IGL",
+  "IOC",
+  "IGL",
   "INDUSINDBK",
   "INFIBEAM",
   "INFY",
   "INDIGO",
-  "    IRB",
-  "    ITC",
+  "IRB",
+  "ITC",
   "JISLJALEQS",
   "JPASSOCIAT",
   "JETAIRWAYS",
@@ -662,7 +688,7 @@ const stocks = [
   "LICHSGFIN",
   "LUPIN",
   "M & MFIN",
-  "    MGL",
+  "MGL",
   "M & M",
   "MANAPPURAM",
   "MRPL",
@@ -671,31 +697,31 @@ const stocks = [
   "MFSL",
   "MINDTREE",
   "MOTHERSUMI",
-  "    MRF",
-  "    MCX",
+  "MRF",
+  "MCX",
   "MUTHOOTFIN",
   "NATIONALUM",
   "NBCC",
-  "    NCC",
+  "NCC",
   "NESTLEIND",
   "NHPC",
   "NIITTECH",
   "NMDC",
   "NTPC",
   "ONGC",
-  "    OIL",
+  "OIL",
   "OFSS",
   "ORIENTBANK",
   "PAGEIND",
   "PCJEWELLER",
   "PETRONET",
   "PIDILITIND",
-  "    PEL",
-  "    PFC",
+  "PEL",
+  "PFC",
   "POWERGRID",
-  "    PTC",
-  "    PNB",
-  "    PVR",
+  "PTC",
+  "PNB",
+  "PVR",
   "RAYMOND",
   "RBLBANK",
   "RELCAPITAL",
@@ -709,7 +735,7 @@ const stocks = [
   "SRTRANSFIN",
   "SIEMENS",
   "SREINFRA",
-  "    SRF",
+  "SRF",
   "SBIN",
   "SAIL",
   "STAR",
@@ -719,7 +745,7 @@ const stocks = [
   "SYNDIBANK",
   "TATACHEM",
   "TATACOMM",
-  "    TCS",
+  "TCS",
   "TATAELXSI",
   "TATAGLOBAL",
   "TATAMTRDVR",
@@ -738,9 +764,9 @@ const stocks = [
   "UJJIVAN",
   "ULTRACEMCO",
   "UNIONBANK",
-  "    UBL",
+  "UBL",
   "MCDOWELL - N",
-  "    UPL",
+  "UPL",
   "VEDL",
   "VGUARD",
   "VOLTAS",
@@ -753,11 +779,11 @@ const stocks = [
 const label = ["Jan", "Feb", "Mar", "Apr", "May"];
 const df = [
   {
-    label: "Data for 2020",
+    label: "Data for Nifty",
     data: [3, 2, 2, 1, 5],
   },
   {
-    label: "Data for 2019",
+    label: "Data for Sensex",
     data: [2.8, 1.2, 4, 3.1, 3.6],
   },
 ];

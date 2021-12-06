@@ -12,9 +12,27 @@ export const WatchList = () => {
     }
   });
   return (
-    <>
-      <h4>WatchList</h4>
-      <h6>Build the complete watchlist</h6>
-    </>
+    <Wrapper>
+      <SubWrapper></SubWrapper>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  background: #dcdcdc;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+`;
+
+const SubWrapper = styled.div`
+  background: #f5f5f5;
+  // border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 94%;
+`;

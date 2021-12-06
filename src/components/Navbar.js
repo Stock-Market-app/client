@@ -32,13 +32,18 @@ export const Navbar = () => {
       <h2>Welcome to StockStop</h2>
       <div>
         {token && (
-          <a
+          <button
             onClick={watchlistHandler}
-            href="#"
-            style={{ textDecoration: "none", color: "black" }}
+            style={{
+              textDecoration: "none",
+              color: "black",
+              border: "none",
+              background: "none",
+              cursor: "pointer",
+            }}
           >
             Watchlist
-          </a>
+          </button>
         )}
         {token && (
           <Button onClick={logoutHandler} color="#b52a46">
