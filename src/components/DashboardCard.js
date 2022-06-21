@@ -32,6 +32,6 @@ const Card = styled.div`
 const Info = styled.div`
   display: flex;
   > span {
-    margin: 12px 24px;
+    margin: 25px 50px;
   }
 `;
