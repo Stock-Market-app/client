@@ -23,14 +23,14 @@ const Card = styled.div`
   border-radius: 12px;
   padding: 12px;
   margin: 12px;
-  display: flex;
+  display: relative;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
 `;
 
 const Info = styled.div`
-  display: flex;
+  display: absolute;
   > span {
     margin: 25px 50px;
   }
