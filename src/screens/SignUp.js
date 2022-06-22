@@ -10,8 +10,8 @@ import { CoverPicture } from "../components/CoverPicture";
 import * as authActions from "../store/actions/auth";
 
 export const SignUp = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
@@ -52,7 +52,13 @@ export const SignUp = () => {
     return password === confirmPass;
   };
 
-
+  useEffect(() => {
+    if (checkConfirmPass() && confirmPass.length > 0) {
+      setCheck("Passwords match!");
+    } else if (confirmPass.length > 0) {
+      setCheck("Passwords do not match");
+    }
+  }, [check, confirmPass]);
 
   const loginClickHandler = () => {
     navigate("/");
