@@ -52,13 +52,7 @@ export const SignUp = () => {
     return password === confirmPass;
   };
 
-  useEffect(() => {
-    if (checkConfirmPass() && confirmPass.length > 0) {
-      setCheck("Passwords match!");
-    } else if (confirmPass.length > 0) {
-      setCheck("Passwords do not match");
-    }
-  }, [check, confirmPass]);
+
 
   const loginClickHandler = () => {
     navigate("/");
