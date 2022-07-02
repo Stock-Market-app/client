@@ -8,14 +8,13 @@ import * as StockActions from "../store/actions/stocks";
 export const WatchList = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.Auth.token);
-  const watchList = useSelector((state) => state.Stocks.watcher);
-  const navigate = useNavigate();
+  
 
   const [data, setData] = useState([]);
 
-  // const getWatchlist = async () => {
-  //   await dispatch(StockActions.getWatchlist());
-  // };
+   const getWatchlist = async () => {
+     await dispatch(StockActions.getWatchlist());
+   };
 
   const getWatchlistData = async () => {
     if (watchList.length > 0) {
