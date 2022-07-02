@@ -6,15 +6,19 @@ import { WatcherCard } from "../components/WatcherCard";
 import * as StockActions from "../store/actions/stocks";
 
 export const WatchList = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = useSelector((state) => state.Auth.token);
-  
+  const dispatch = useDispatch();
+  const watchList = useSelector((state) => state.Stocks.watcher);
+ 
 
   const [data, setData] = useState([]);
 
-   const getWatchlist = async () => {
+  /*
+    const getWatchlist = async () => {
      await dispatch(StockActions.getWatchlist());
    };
+   */
 
   const getWatchlistData = async () => {
     if (watchList.length > 0) {
@@ -34,7 +38,8 @@ export const WatchList = () => {
     }
   };
 
-  // console.log(data);
+   console.log(data);
+  
 
   useEffect(() => {
     if (!token) {
@@ -77,7 +82,7 @@ const Wrapper = styled.div`
 `;
 
 const SubWrapper = styled.div`
-  background: #f5f5f5;
+  background: #000000;
   // border-radius: 12px;
   display: flex;
   align-items: center;
