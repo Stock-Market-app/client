@@ -82,7 +82,7 @@ const Wrapper = styled.div`
 `;
 
 const SubWrapper = styled.div`
-  background: #000000;
+  background: #f5f5f5;
   // border-radius: 12px;
   display: flex;
   align-items: center;
