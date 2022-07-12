@@ -17,13 +17,14 @@ export const Login = () => {
   const [password, setPassword] = useState("");
 
   const loginHandler = async () => {
-    // console.log(email, password);
+     console.log(email, password);
     try {
       if (username && password) {
         toast.info("Logging In ...", { autoClose: 1000 });
-        await dispatch(authActions.login(username, password));
+       
         setUserName("");
         setPassword("");
+        await dispatch(authActions.login(username, password));
         navigate("/dashboard");
       } else {
         toast.warning("Please fill username and password", { autoClose: 2500 });
@@ -34,9 +35,7 @@ export const Login = () => {
     }
   };
 
-  const signUpClickHandler = () => {
-    navigate("/signup");
-  };
+
 
   return (
     <Wrapper>
