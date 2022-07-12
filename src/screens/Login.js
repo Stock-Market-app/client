@@ -17,14 +17,15 @@ export const Login = () => {
   const [password, setPassword] = useState("");
 
   const loginHandler = async () => {
-     console.log(email, password);
+    // console.log(email, password);
     try {
       if (username && password) {
         toast.info("Logging In ...", { autoClose: 1000 });
-       
+       await dispatch(authActions.login(username, password));
         setUserName("");
+        
         setPassword("");
-        await dispatch(authActions.login(username, password));
+
         navigate("/dashboard");
       } else {
         toast.warning("Please fill username and password", { autoClose: 2500 });
@@ -34,7 +35,11 @@ export const Login = () => {
         toast.error("Invalid username / password", { autoClose: 2500 });
     }
   };
-
+  
+  
+    const signUpClickHandler = () => {
+    navigate("/signup");
+  };
 
 
   return (
@@ -138,7 +143,6 @@ const Button = styled.button`
   margin: 12px 0 12px 6px;
   background: #101727;
   color: white;
-  padding: 12px;
-  border-radius: 12px;
-  width: 100%;
+  padding: 25px;
+  width: 80%;
 `;
