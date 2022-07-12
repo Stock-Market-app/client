@@ -142,7 +142,8 @@ const FormContainer = styled.div`
 const Button = styled.button`
   margin: 12px 0 12px 6px;
   background: #101727;
+  border-radius: 12px;
   color: white;
-  padding: 25px;
-  width: 80%;
+  padding: 12px;
+  width: 100%;
 `;
